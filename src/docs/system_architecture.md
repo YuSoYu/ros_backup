@@ -1,0 +1,39 @@
+- Robot (라즈베리파이 기반)
+  - Mobile Controller 프로세스
+    - 각종 센서 및 엑추에이터와 직접 연결
+    - 장치 목록:
+      - LCD, DC Motor Driver, Buzzer, Emergency Stop
+      - Pi Camera, LiDAR, Force Sensing Resistor (FSR)
+      - IR Sensor, IMU Sensor, Ultrasonic Sensor, Battery
+    - AI Server의 Object Detector와 UDP (단방향) 통신
+      - 미디어(예: 영상 프레임 등) 전송
+    - Main Server의 Main Service와 ROS2 (DDS 기반 양방향) 통신
+- AI Server
+  - AI 처리 전담 서버
+  - File System
+    - Mobile Controller로부터 받은 미디어 데이터를 파일로 저장
+  - Object Detector 모듈
+    - 미디어 데이터로부터 각 AI 모듈에 전달하기 위한 객체 검출
+  - AI Modules
+    - 향후 확장 가능한 Docker 기반 모듈 구성
+    - 확정된 모듈은 Computer Vision
+    - 개발 상황에 따라서 향후 Controll 외의 자율주행 모듈 추가 예정
+  - Main Server와 TCP (양방향) 통신
+    - ROS2 미설치 환경으로 TCP 사용
+- Main Server
+  - Main Service 프로세스
+    - ROS2 기반의 로봇 통신 제어
+    - Worker/관리자와의 중앙 통신 처리
+    - 다양한 요청 및 상태 처리 담당
+  - 통신 구성
+    - Mobile Controller ↔ Main Service: ROS2
+    - Object Detector ↔ Main Service: TCP
+    - User GUI ↔ Main Service: TCP
+    - Admin GUI ↔ Main Service: ROS2
+- User/Admin GUI
+  - User GUI (PyQt 기반, 일반 사용자용)
+    - Main Service와 TCP (양방향) 통신
+  - Admin GUI (PyQt 기반, 관리자용)
+    - Main Service와 ROS2 (양방향) 통신
+  - 보안상의 이유로 각 GUI는 별도의 독립 실행 프로그램으로 구동됨
+
